@@ -25,17 +25,7 @@ for i in range(len(sp_albums['items'])):
 album_names
 album_uris
 
-currentAlbum = {}
 
-def albumSongs(uri):
-    #gets an album's uri and creates a 
-    album = uri
-    currentAlbum[album]['album'] = []
-    currentAlbum[album]['track number'] = []
-    currentAlbum[album]['id'] = []
-    currentAlbum[album]['name'] = []
-    currentAlbum[album]['uri'] = []
-    
-    tracks = sp.album_tracks(album)
+
 
         
