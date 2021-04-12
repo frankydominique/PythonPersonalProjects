@@ -6,26 +6,26 @@ client_secret =
 
 client_credentials_manager = SpotifyClientCredentials(client_id=client_id,
                                                       client_secret=client_secret)
-sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
-name = "Daniel Caesar"
+spotify = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
-result = sp.search(name)
+svt_uri = 'spotify:artist:7nqOGRxlXj7N2JYbgNEjYH'
 
-artist_uri = result['tracks']['items'][0]['artists'][0]['uri']
+results = spotify.artist_top_tracks(svt_uri)
+track_names = []
+track_uris = []
+track_ids = []
 
-sp_albums = sp.artist_albums(artist_uri, album_type='album')
+for track in results['tracks'][:10]:
+    track_names.append(track['name'])
+    track_uris.append(track['uri'])
+    track_ids.append(track['id'])
 
-album_names=[]
-album_uris=[]
-for i in range(len(sp_albums['items'])):
-    album_names.append(sp_albums['items'][i]['name'])
-    album_uris.append(sp_albums['items'][i]['uri'])
-
-album_names
-album_uris
-
+for track in track_ids:
+    print(spotify.audio_analysis(track))
 
 
 
-        
+
+
+
