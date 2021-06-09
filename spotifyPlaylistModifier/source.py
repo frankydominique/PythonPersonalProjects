@@ -1,8 +1,8 @@
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
-client_id = ''
-client_secret = ''
+client_id = 'c921a20a648f4379b3f5e52d3bc38526'
+client_secret = 'c603dcc6fc4b499392da1ef82fbe03d6'
 
 client_credentials_manager = SpotifyClientCredentials(client_id=client_id,
                                                       client_secret=client_secret)
@@ -38,14 +38,26 @@ for i in range(10):
     trackFeatures['instrumentalness'] = spotifyTrackFeatures[i][0]['instrumentalness']
     trackFeatures['speechiness'] = spotifyTrackFeatures[i][0]['speechiness']
     trackFeatures['valence'] = spotifyTrackFeatures[i][0]['valence']
+    trackFeatures['start loudness'] = spotify.audio_analysis(track_ids[i]).get("sections")[0].get("loudness")
+    trackFeatures['start tempo'] = spotify.audio_analysis(track_ids[i]).get("sections")[0].get("tempo")
+    sectionsLen = len(spotify.audio_analysis(track_ids[i]).get("sections"))
+    trackFeatures['end loudness'] = spotify.audio_analysis(track_ids[i]).get("sections")[sectionsLen - 1].get("loudness")
+    trackFeatures['end tempo'] = spotify.audio_analysis(track_ids[i]).get("sections")[sectionsLen - 1].get("tempo")
     songsWFeatures[track_names[i]] = trackFeatures
 
 print(songsWFeatures)
-    
-    
-    
-    
+#print(songsWFeatures.get("Don't Wanna Cry","Failed"))
+print(spotify.audio_analysis(track_ids[0]).get("sections")[0])
 
+## energy, valence, loudness, danceability
+## sections (an array spotify breaks up the different parts of the song, want beginning
+    ##end, and middle)
+## in sections, keys that matter are loudness, tempo
+
+
+    
+    
+    
 
 
 
