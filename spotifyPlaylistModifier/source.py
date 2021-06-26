@@ -18,11 +18,11 @@ track_ids = []
 
 for track in results['tracks'][:10]:
     track_names.append(track['name'])
-    print('adding ' + track['name'])
+    #print('adding ' + track['name'])
     track_uris.append(track['uri'])
-    print('uri: ' + track['uri'])
+    #print('uri: ' + track['uri'])
     track_ids.append(track['id'])
-    print('id: ' + track['id'])
+    #print('id: ' + track['id'])
 
 spotifyTrackFeatures = []
 for track in track_ids:
@@ -33,27 +33,43 @@ for i in range(10):
     trackFeatures = {}
     trackFeatures['danceability'] = spotifyTrackFeatures[i][0]['danceability']
     trackFeatures['energy'] = spotifyTrackFeatures[i][0]['energy']
-    trackFeatures['loudness'] = spotifyTrackFeatures[i][0]['loudness']
-    trackFeatures['acousticness'] = spotifyTrackFeatures[i][0]['acousticness']
-    trackFeatures['instrumentalness'] = spotifyTrackFeatures[i][0]['instrumentalness']
-    trackFeatures['speechiness'] = spotifyTrackFeatures[i][0]['speechiness']
-    trackFeatures['valence'] = spotifyTrackFeatures[i][0]['valence']
-    trackFeatures['start loudness'] = spotify.audio_analysis(track_ids[i]).get("sections")[0].get("loudness")
-    trackFeatures['start tempo'] = spotify.audio_analysis(track_ids[i]).get("sections")[0].get("tempo")
+    #trackFeatures['loudness'] = spotifyTrackFeatures[i][0]['loudness']
+    #trackFeatures['start loudness'] = spotify.audio_analysis(track_ids[i]).get("sections")[0].get("loudness")
+    #trackFeatures['start tempo'] = spotify.audio_analysis(track_ids[i]).get("sections")[0].get("tempo")
     sectionsLen = len(spotify.audio_analysis(track_ids[i]).get("sections"))
-    trackFeatures['end loudness'] = spotify.audio_analysis(track_ids[i]).get("sections")[sectionsLen - 1].get("loudness")
-    trackFeatures['end tempo'] = spotify.audio_analysis(track_ids[i]).get("sections")[sectionsLen - 1].get("tempo")
+    #trackFeatures['end loudness'] = spotify.audio_analysis(track_ids[i]).get("sections")[sectionsLen - 1].get("loudness")
+    #trackFeatures['end tempo'] = spotify.audio_analysis(track_ids[i]).get("sections")[sectionsLen - 1].get("tempo")
+    countBeats = 0
+    countTatums = 0
+    for j in range(len(spotify.audio_analysis(track_ids[i]).get("beats"))):
+        countBeats = countBeats + 1
+    for k in range(len(spotify.audio_analysis(track_ids[i]).get("tatums"))):
+        countTatums = countTatums + 1
+    songDuration = spotify.audio_analysis(track_ids[i]).get("track").get("duration") / 60
+    trackFeatures['beat per minute'] = countBeats / songDuration
+    trackFeatures['tatum per minute'] = countTatums / songDuration
     songsWFeatures[track_names[i]] = trackFeatures
+    
 
 print(songsWFeatures)
 #print(songsWFeatures.get("Don't Wanna Cry","Failed"))
-print(spotify.audio_analysis(track_ids[0]).get("sections")[0])
+#print(spotify.audio_analysis(track_ids[0]).get("beats"))
 
 ## energy, valence, loudness, danceability
 ## sections (an array spotify breaks up the different parts of the song, want beginning
     ##end, and middle)
 ## in sections, keys that matter are loudness, tempo
 
+
+# make a weighted score using beat, tatum, energy, danceability
+# will i need to standardize the values? yeah ://
+
+
+weightedScores = []
+for song in songsWFeatures:
+    songAndScore = {}
+    score = songsWFeatures[song].get('beat per minute') * .75 + songsWFeatures[song].get('tatum per minute') * .126 + songsWFeatures[song].get('energy') + songsWFeatures[song].get('danceability')
+    print(score)
 
     
     
