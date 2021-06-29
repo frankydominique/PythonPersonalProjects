@@ -1,5 +1,30 @@
-import spotipy
+import spotipy, statistics
 from spotipy.oauth2 import SpotifyClientCredentials
+from statistics import stdev
+
+def getAspectMean(songsWFeatures, aspect):
+    values = []
+    for song in songsWFeatures:
+        values.append(songsWFeatures[song].get(aspect))
+    return statistics.mean(values)
+
+def getAspectSTDV(songsWFeatures, aspect):
+    values = []
+    for song in songsWFeatures:
+        values.append(songsWFeatures[song].get(aspect))
+    return statistics.pstdev(values)
+
+#newDict should be a dictionary of the standardized aspect values
+def standardizeAspect(songsWFeatures, aspect, newDict):
+    values = []
+    for song in songsWFeatures:
+        values.append(songsWFeatures[song].get(aspect))
+    standardizedValues = []
+    for i in values:
+        mean = getAspectMean(songsWFeatures, aspect)
+        stdv = getAspectSTDV(songsWFeatures, aspect)
+        standardizedValues.append((i - mean) / stdv)
+    newDict[aspect] = standardizedValues
 
 client_id = ''
 client_secret = ''
@@ -52,6 +77,8 @@ for i in range(10):
     
 
 print(songsWFeatures)
+aspectsStandardized = {}
+print(standardizeAspect(songsWFeatures, 'energy', aspectsStandardized))
 #print(songsWFeatures.get("Don't Wanna Cry","Failed"))
 #print(spotify.audio_analysis(track_ids[0]).get("beats"))
 
@@ -62,20 +89,4 @@ print(songsWFeatures)
 
 
 # make a weighted score using beat, tatum, energy, danceability
-# will i need to standardize the values? yeah ://
-
-
-weightedScores = []
-for song in songsWFeatures:
-    songAndScore = {}
-    score = songsWFeatures[song].get('beat per minute') * .75 + songsWFeatures[song].get('tatum per minute') * .126 + songsWFeatures[song].get('energy') + songsWFeatures[song].get('danceability')
-    print(score)
-
-    
-    
-    
-
-
-
-
-
+# will i need to standardize the values? yeah 
